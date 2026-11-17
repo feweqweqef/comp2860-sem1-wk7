@@ -37,6 +37,8 @@ class SubstitutionCipher:
         str
             The ciphertext string.
         """
+        ciphertext = ciphertext.upper()
+        
         ciphertext = ''
         return ciphertext
 

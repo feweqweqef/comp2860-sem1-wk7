@@ -1,3 +1,4 @@
+import string
 class VigenereCipher:
     """
        VigenereCipher class (TO BE COMPLETED).
@@ -34,7 +35,17 @@ class VigenereCipher:
         str
             The shifted letter.
         """
-        shifted_letter = ''
+
+        position = ord(letter) - VigenereCipher.offset
+
+        if forward:
+            new_position = position + shift
+        else:
+            new_position = position - shift
+
+        new_position = new_position % 26
+        
+        shifted_letter = chr(new_position + VigenereCipher.offset)
         return shifted_letter
 
     def __generate_shift_list(self, plaintext_length: int):
@@ -58,7 +69,13 @@ class VigenereCipher:
         list
             A list of shifts (integers).
         """
+
         shift_list = []
+
+        for i in range(plaintext_length):
+            letter = self.keyword[i % len(self.keyword)]
+            number = ord(letter) - VigenereCipher.offset
+            shift_list.append(number)
         return shift_list
 
     def encrypt(self, plaintext: str):
@@ -82,7 +99,18 @@ class VigenereCipher:
         str
             The ciphertext string.
         """
+
+        plaintext = plaintext.upper()
+        cleaned = ''
+        for char in plaintext:
+            if char in string.ascii_uppercase:
+                cleaned += char 
+
+        shift_list = self.__generate_shift_list(len(cleaned))
         ciphertext = ''
+
+        for i in range(len(cleaned)):
+            ciphertext += self.__shift_letter(cleaned[i], shift_list[i], True)
         return ciphertext
 
     def decrypt(self, ciphertext: str):
@@ -109,7 +137,17 @@ class VigenereCipher:
         str
             The plaintext string.
         """
+        ciphertext = ciphertext.upper()
+        cleaned = ''
+        for char in ciphertext:
+                    if char in string.ascii_uppercase:
+                        cleaned += char
+
+        shift_list = self.__generate_shift_list(len(cleaned))
         plaintext = ''
+
+        for i in range(len(cleaned)):
+             plaintext += self.__shift_letter(cleaned[i], shift_list[i], False)
         return plaintext
 
 
@@ -118,6 +156,9 @@ def main():
     ciphertext = vig_cipher.encrypt("The quick brown fox jumps over the lazy dog")
     plaintext = vig_cipher.decrypt(ciphertext)
     assert plaintext == 'THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG'
+    #print(VigenereCipher('B').encrypt('ABC'))          
+
+
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 
+import string
 class ShiftCipher:
     """
     ShiftCipher class (TO BE COMPLETED).
@@ -32,7 +33,17 @@ class ShiftCipher:
         str
             The shifted letter.
         """
-        shifted_letter = ''
+        position = ord(letter) - ShiftCipher.offset
+
+        if forward:
+            new_position = position + self.shift
+        else:
+            new_position = position - self.shift
+
+        new_position = new_position % 26
+
+        
+        shifted_letter = chr(new_position + ShiftCipher.offset)
         return shifted_letter
 
     def encrypt(self, plaintext: str):
@@ -55,7 +66,14 @@ class ShiftCipher:
         str
             The ciphertext string.
         """
+
+        plaintext = plaintext.upper()
         ciphertext = ''
+        for char in plaintext:
+            if char in string.ascii_uppercase:
+                ciphertext += self.__shift_letter(char, True)
+            else:
+                ciphertext += char
         return ciphertext
 
     def decrypt(self, ciphertext: str):
@@ -78,7 +96,13 @@ class ShiftCipher:
         str
             The plaintext string.
         """
+        ciphertext = ciphertext.upper()
         plaintext = ''
+        for char in ciphertext:
+            if char in string.ascii_uppercase:
+                plaintext += self.__shift_letter(char, False)
+            else:
+                plaintext += char
         return plaintext
 
 
@@ -89,6 +113,8 @@ def main():
     ciphertext = shift_cipher.encrypt('The quick brown fox jumps over the lazy dog')
     plaintext = shift_cipher.decrypt(ciphertext)
     assert plaintext == 'THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG'
+    print(shift_cipher.encrypt('Hi!'))        
+
 
 if __name__ == "__main__":
     main()
